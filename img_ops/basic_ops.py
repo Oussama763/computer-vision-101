@@ -42,4 +42,28 @@ def resize_image(image: str, width: int, height: int):
     cv.destroyAllWindows()
 
 
-resize_image("painting.png", 500, 200)
+
+
+def crop_image(image: str, i_start: int, j_start: int, i_end: int, j_end: int):
+    """Shows the cropped version of your image
+    Args:
+        image (str): name of the image that should be in the directory img_ops/images/  ---- (Example: image_name.png)
+        i_start (int): row from where the cropping starts
+        j_start (int): column where the cropping starts
+        i_end (int): row where the cropping ends
+        j_end (int): column where the cropping ends
+    
+    Returns:
+        None
+    """
+    img = cv.imread("images/"+image)
+    if img is None:
+        print("The image you entered is not found, please read the documentation of resize_image()")
+        return
+    cropped_img = img[i_start:i_end, j_start:j_end]
+    cv.imshow('Cropped', cropped_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+
+crop_image("painting.png", 0, 200, 500, 500)
