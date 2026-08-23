@@ -192,6 +192,9 @@ def detect_objects(image: str, min_area: int) -> None:
 
     contours, hierarchy = cv.findContours(dilated_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
+    #print(contours[0])
+    #print(hierarchy[0])
+
     count = 0
 
     for contour in contours:
@@ -210,8 +213,87 @@ def detect_objects(image: str, min_area: int) -> None:
     cv.waitKey(0)
     cv.destroyAllWindows()
 
+
+
+def classify_shapes(image: str, min_area: int) -> None:
+    """Shows the objects in the image
+            
+    Args:
+        image (str): name of the image that should be in the directory img_ops/images/    ----    (Example: image_name.png)
+        min_area (int): minimum area of the object to be detected
+
+    Returns:
+        None
+    """
+    img = cv.imread("images/"+image)
+    if img is None:
+        print("The image you entered is not found, please read the documentation of resize_image()")
+        return
+
+    output_img = img.copy()
+    
+    gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    blur_img = cv.GaussianBlur(gray_img, (5, 5), sigmaX=0)
+    edges_img = cv.Canny(blur_img, threshold1=50, threshold2=150)
+    kernel = np.ones((3, 3))
+    dilated_img = cv.dilate(edges_img, kernel, iterations=1)
+
+    contours, hierarchy = cv.findContours(dilated_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+    for contour in contours:
+        area = cv.contourArea(contour)
+
+        if area < min_area:
+            continue
+
+        perimeter = cv.arcLength(contour, closed=True)
+        epsilon = 0.02 * perimeter
+        approx_vertices = cv.approxPolyDP(contour, epsilon, closed=True)
+
+        num_vertices: int = len(approx_vertices)
+        shape_label: str = "Unknown"
+
+        if num_vertices == 3:
+            shape_label = "Triangle"
+        elif num_vertices == 4:
+            x, y, w, h = cv.boundingRect(approx_vertices)
+            aspect_ratio: float = float(w) / h
+            shape_label = "Square" if 0.95 <= aspect_ratio <= 1.05 else "Rectangle"
+        elif num_vertices == 5:
+            shape_label = "Pentagon"
+        else:
+            shape_label = "Circle"
+
+        
+        M = cv.moments(contour)
+        if M["m00"] != 0:
+            cx: int = int(M["m10"] / M["m00"])
+            cy: int = int(M["m01"] / M["m00"])
+        else:
+            cx, cy = 0, 0
+
+        cv.drawContours(output_img, [approx_vertices], -1, (255, 0, 0), 2)
+        cv.circle(output_img, (cx, cy), 4, (0, 0, 255), -1)
+
+        cv.putText(
+            output_img,
+            shape_label,
+            (cx - 20, cy - 10),
+            cv.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 255, 0),
+            2
+        )
+
+    cv.imshow("Shape Classification", output_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+
+    
+
 #lower_red = np.array([0, 50, 50])
 #upper_red = np.array([10, 255, 255])
 
 
-detect_objects("painting.png", 500)
+classify_shapes("painting.png", 200)
