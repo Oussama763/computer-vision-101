@@ -247,11 +247,11 @@ def classify_shapes(image: str, min_area: int) -> None:
             continue
 
         perimeter = cv.arcLength(contour, closed=True)
-        epsilon = 0.02 * perimeter
+        epsilon = 0.01 * perimeter
         approx_vertices = cv.approxPolyDP(contour, epsilon, closed=True)
 
-        num_vertices: int = len(approx_vertices)
-        shape_label: str = "Unknown"
+        num_vertices = len(approx_vertices)
+        shape_label = "Unknown"
 
         if num_vertices == 3:
             shape_label = "Triangle"
@@ -267,8 +267,8 @@ def classify_shapes(image: str, min_area: int) -> None:
         
         M = cv.moments(contour)
         if M["m00"] != 0:
-            cx: int = int(M["m10"] / M["m00"])
-            cy: int = int(M["m01"] / M["m00"])
+            cx = int(M["m10"] / M["m00"])
+            cy = int(M["m01"] / M["m00"])
         else:
             cx, cy = 0, 0
 
@@ -296,4 +296,4 @@ def classify_shapes(image: str, min_area: int) -> None:
 #upper_red = np.array([10, 255, 255])
 
 
-classify_shapes("painting.png", 200)
+classify_shapes("painting.png", 5000)
