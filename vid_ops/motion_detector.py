@@ -1,5 +1,5 @@
-import cv2
-import numpy as np
+import cv2 as cv
+#import numpy as np
 
 def run_motion_detector(min_area: int) -> None:
     """Detects motion in the video stream
@@ -10,7 +10,7 @@ def run_motion_detector(min_area: int) -> None:
     Returns:
         None
     """
-    cap = cv2.VideoCapture(0)
+    cap = cv.VideoCapture(0)
 
     if not cap.isOpened():
         print("Error: Could not open video stream / webcam.")
@@ -30,58 +30,60 @@ def run_motion_detector(min_area: int) -> None:
 
         output_frame = frame.copy()
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (21, 21), 0)
+        gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+        blurred = cv.GaussianBlur(gray, (21, 21), 0)
 
         if background_frame is None:
             background_frame = blurred
             continue
 
-        frame_delta = cv2.absdiff(background_frame, blurred)
+        frame_delta = cv.absdiff(background_frame, blurred)
 
-        _, thresh_delta = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)
+        background_frame = blurred
 
-        dilated_delta = cv2.dilate(thresh_delta, None, iterations=2)
+        _, thresh_delta = cv.threshold(frame_delta, 25, 255, cv.THRESH_BINARY)
 
-        contours, _ = cv2.findContours(
-            dilated_delta, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        dilated_delta = cv.dilate(thresh_delta, None, iterations=2)
+
+        contours, _ = cv.findContours(
+            dilated_delta, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
         )
 
         motion_detected = False
 
         for contour in contours:
-            if cv2.contourArea(contour) < min_area:
+            if cv.contourArea(contour) < min_area:
                 continue
 
             motion_detected = True
             
-            x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(output_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            x, y, w, h = cv.boundingRect(contour)
+            cv.rectangle(output_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         status_text = "MOTION DETECTED!" if motion_detected else "System Clear"
         status_color = (0, 0, 255) if motion_detected else (0, 255, 0)
-        cv2.putText(
+        cv.putText(
             output_frame,
             f"Status: {status_text}",
             (10, 30),
-            cv2.FONT_HERSHEY_SIMPLEX,
+            cv.FONT_HERSHEY_SIMPLEX,
             0.8,
             status_color,
             2
         )
 
-        cv2.imshow("Webcam Live Feed (Motion Detector)", output_frame)
-        cv2.imshow("Thresholded Motion Mask (Delta)", dilated_delta)
+        cv.imshow("Webcam Live Feed (Motion Detector)", output_frame)
+        cv.imshow("Thresholded Motion Mask (Delta)", dilated_delta)
 
-        key = cv2.waitKey(1) & 0xFF
+        key = cv.waitKey(1) & 0xFF
         if key == ord('q'):
             break
-        elif key == ord('r'):
-            background_frame = blurred
-            print("Background reference reset.")
+        #elif key == ord('r'):
+        #    background_frame = blurred
+        #    print("Background reference reset.")
 
     cap.release()
-    cv2.destroyAllWindows()
+    cv.destroyAllWindows()
 
 
-run_motion_detector(min_area=1500.0)
+run_motion_detector(100)
