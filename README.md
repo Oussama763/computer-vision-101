@@ -15,16 +15,24 @@ This directory has the basic operations that you can make on a static image: iso
 This directory only has a script that detects motion using your webcam. It uses nearly all the techniques that were done in the img\_ops/
 
 
+## Projects/
+
+This directory has some basic hands-on projects to practice what I learned in the previous two dirs
+
 ## Current structure:
 
 ```
 computer-vision-101/
-├── img_ops/
-│   ├── basic_ops.py
-│   └── images/
-│       └── painting.png
+├── img_ops
+│   ├── basic_ops.py
+│   └── images
+│       └── painting.png
+├── projects
+│   ├── air_canvas.py
+│   └── hand_landmarker.task
 ├── README.md
-└── vid_ops/
+└── vid_ops
+    ├── face_detector.py
     └── motion_detector.py
 
 ```
