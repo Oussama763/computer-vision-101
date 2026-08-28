@@ -23,15 +23,15 @@ This directory has some basic hands-on projects to practice what I learned in th
 
 ```
 computer-vision-101/
-├── img_ops
+├── img_ops/
 │   ├── basic_ops.py
 │   └── images
 │       └── painting.png
-├── projects
+├── projects/
 │   ├── air_canvas.py
-│   └── hand_landmarker.task
+│   └── air_paint.py
 ├── README.md
-└── vid_ops
+└── vid_ops/
     ├── face_detector.py
     └── motion_detector.py
 
