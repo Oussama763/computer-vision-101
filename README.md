@@ -24,15 +24,18 @@ This directory has some basic hands-on projects to practice what I learned in th
 ```
 computer-vision-101/
 ├── img_ops/
-│   ├── basic_ops.py
-│   └── images
-│       └── painting.png
+│   ├── basic_ops.py
+│   └── images/
+│       └── painting.png
 ├── projects/
-│   ├── air_canvas.py
-│   └── air_paint.py
+│   ├── air_canvas.py
+│   ├── air_paint.py
+│   └── overlay.py
 ├── README.md
+├── requirements.txt
 └── vid_ops/
     ├── face_detector.py
     └── motion_detector.py
+
 
 ```
