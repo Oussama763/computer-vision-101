@@ -15,7 +15,7 @@ This directory has the basic operations that you can make on a static image: iso
 This directory only has a script that detects motion using your webcam. It uses nearly all the techniques that were done in the img\_ops/
 
 
-## Projects/
+### Projects/
 
 This directory has some basic hands-on projects to practice what I learned in the previous two dirs
 
